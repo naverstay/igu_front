@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
+:root {
+    box-sizing: border-box;
+    height: 100%;
+    --fancybox-bg: rgba(0, 0, 0, 0.6);
+    --app-height: 100vh;
+    --app-scroll-size: 0px;
+    --menu-width: 380px;
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    @media (hover: none) {
+        --app-scroll-size: 0px !important;
+    }
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    min-height: 100%;
+    font-feature-settings: "lnum";
+    font-feature-settings: "lnum" on;
+    font-feature-settings: "pnum" on, "lnum" on;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+
+#root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 15px 20px;
+    position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+.container a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container a:hover {
+    color: #07c;
+}
+
+.container a.active {
+    color: #07c;
+    font-weight: 600;
+}
+
+.main {
+    flex: 1;
 }

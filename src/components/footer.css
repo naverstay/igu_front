@@ -1,0 +1,15 @@
+.footer {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    background: white;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.footer-inner {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}

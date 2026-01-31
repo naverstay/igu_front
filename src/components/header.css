@@ -1,0 +1,77 @@
+
+.header {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav {
+    display: flex;
+    gap: 25px;
+}
+
+.logo {
+    margin-right: auto;
+}
+
+.logo-img {
+    height: 34px;
+    width: auto;
+}
+
+.phone {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.burger {
+    display: none;
+    font-size: 26px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+/* АДАПТИВ */
+@media (max-width: 1280px) {
+    .nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        margin-top: 1px;
+        right: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .nav.open {
+        display: flex;
+        flex-direction: column;
+        padding: 15px 20px;
+        background: white;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .phone {
+        margin-left: 8px;
+    }
+
+    .burger {
+        display: block;
+    }
+}
