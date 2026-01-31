@@ -1,15 +1,21 @@
 import React, {useState, useEffect} from "react";
 import {NavLink, useLocation} from "react-router-dom";
 import {FaBars, FaTimes, FaPhone} from "react-icons/fa"
+import {useNavigation} from "../context/NavigationContext";
+
 import "./header.css";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const {menu} = useNavigation();
+
   const location = useLocation();
 
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
+
+  console.log('menu', menu);
 
   return (
     <header className="header">
@@ -22,13 +28,22 @@ export default function Header() {
         </div>
 
         <nav className={"nav " + (open ? " open" : "")}>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/portfolio">Portfolio</NavLink>
-          <NavLink to="/leitlinien">Leitlinien / Themen</NavLink>
-          <NavLink to="/unterstuetzung">Unterstützung</NavLink>
-          <NavLink to="/kontakt">Kontakt</NavLink>
-          <NavLink to="/impressum">Impressum</NavLink>
-          <NavLink to="/ferienbetreuung">Ferienbetreuung in Köln</NavLink>
+          {menu.map(item => (
+            !item.isChild && <div key={item.id} className="nav-link"><NavLink
+              to={item.url}>{item.title}</NavLink> {item.navigation_items && item.navigation_items.length > 0 && (
+              <div className="submenu"> {item.navigation_items.map(sub => (
+                <NavLink key={sub.id} to={sub.url}> {sub.title} </NavLink>))}
+              </div>)}
+            </div>))
+          }
+
+          {/*<NavLink to="/">Home</NavLink>*/}
+          {/*<NavLink to="/portfolio">Portfolio</NavLink>*/}
+          {/*<NavLink to="/leitlinien">Leitlinien / Themen</NavLink>*/}
+          {/*<NavLink to="/unterstuetzung">Unterstützung</NavLink>*/}
+          {/*<NavLink to="/kontakt">Kontakt</NavLink>*/}
+          {/*<NavLink to="/impressum">Impressum</NavLink>*/}
+          {/*<NavLink to="/ferienbetreuung">Ferienbetreuung in Köln</NavLink>*/}
         </nav>
 
         <button

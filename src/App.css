@@ -60,3 +60,12 @@ body {
 .main {
     flex: 1;
 }
+
+.article {
+    padding: 1px 0;
+    position: relative;
+}
+
+.page-not-found {
+    text-align: center;
+}
