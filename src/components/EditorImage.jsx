@@ -1,4 +1,3 @@
-import {mergeAttributes} from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 
 export const EditorImage = Image.extend({

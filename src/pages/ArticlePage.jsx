@@ -75,13 +75,13 @@ export default function ArticlePage({slug: forcedSlug}) {
         <meta name="twitter:description"
               content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
         <meta name="twitter:image"
-              content={process.env.REACT_APP_API_URL + (article?.metaImage?.url || "")}/>
+              content={import.meta.env.VITE_API_URL + (article?.metaImage?.url || "")}/>
 
         <meta property="og:description"
               content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
         <meta property="og:title" content={article?.metaTitle || article?.title || DEFAULT_TITLE}/>
         <meta property="og:image"
-              content={process.env.REACT_APP_API_URL + (article?.metaImage?.url || "")}/>
+              content={import.meta.env.VITE_API_URL + (article?.metaImage?.url || "")}/>
       </Helmet>
 
       <div className="article">

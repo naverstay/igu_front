@@ -55,7 +55,7 @@ export default function TipTapEditor({value, onChange, onSave}) {
       const res = await api.post("/upload", formData);
       console.log("UPLOAD SUCCESS:", res.data);
 
-      return process.env.REACT_APP_API_URL + res.data[0].url;
+      return import.meta.env.VITE_API_URL + res.data[0].url;
     } catch (err) {
       console.error("UPLOAD ERROR:", err.response?.data || err);
       throw err;
