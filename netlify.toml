@@ -3,3 +3,4 @@
 
 [build.environment]
   NPM_CONFIG_IGNORE_SCRIPTS = "true"
+  command = "yarn install --frozen-lockfile && yarn build"
