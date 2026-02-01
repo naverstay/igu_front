@@ -5,42 +5,62 @@ export const EditorImage = Image.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
-
+      width: {
+        default: "auto",
+        parseHTML: el => el.getAttribute("width") || "auto",
+        renderHTML: attrs => ({width: attrs.width})
+      },
       class: {
         default: null,
-        parseHTML: element => element.getAttribute("class"),
-        renderHTML: attributes => {
-          if (!attributes.class) return {};
-          return {class: attributes.class};
-        }
+        parseHTML: el => el.getAttribute("class"),
+        renderHTML: attrs => attrs.class ? {class: attrs.class} : {}
       },
-
-      width: {
-        default: null,
-        parseHTML: element => element.getAttribute("width"),
-        renderHTML: attributes => {
-          if (!attributes.width) return {};
-          return {width: attributes.width};
-        }
-      },
-
-      height: {
-        default: null,
-        parseHTML: element => element.getAttribute("height"),
-        renderHTML: attributes => {
-          if (!attributes.height) return {};
-          return {height: attributes.height};
-        }
-      },
-
       style: {
         default: null,
-        parseHTML: element => element.getAttribute("style"),
-        renderHTML: attributes => {
-          if (!attributes.style) return {};
-          return {style: attributes.style};
-        }
+        parseHTML: el => el.getAttribute("style"),
+        renderHTML: attrs => attrs.style ? {style: attrs.style} : {}
       }
+    };
+  }, addNodeView() {
+    return ({node, editor, getPos}) => {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+      wrapper.style.display = "inline-block";
+      const img = document.createElement("img");
+      img.src = node.attrs.src;
+      img.style.width = node.attrs.width || "auto";
+      img.className = node.attrs.class || "";
+      if (node.attrs.style) img.setAttribute("style", node.attrs.style);
+      const handle = document.createElement("div");
+      handle.className = "editor-image-resizer";
+
+      let startX, startWidth;
+      handle.addEventListener("mousedown", e => {
+        e.preventDefault();
+        startX = e.clientX;
+        startWidth = img.offsetWidth;
+        const onMove = e => {
+          const newWidth = startWidth + (e.clientX - startX);
+          img.style.width = newWidth + "px";
+          editor.commands.updateAttributes("image", {width: newWidth + "px"});
+        };
+        const onUp = () => {
+          document.removeEventListener("mousemove", onMove);
+          document.removeEventListener("mouseup", onUp);
+        };
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onUp);
+      });
+      wrapper.appendChild(img);
+      wrapper.appendChild(handle);
+      return {
+        dom: wrapper, update: updatedNode => {
+          if (updatedNode.type.name !== "image") return false;
+          img.src = updatedNode.attrs.src;
+          img.style.width = updatedNode.attrs.width;
+          return true;
+        }
+      };
     };
   }
 });

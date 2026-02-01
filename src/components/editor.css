@@ -5,7 +5,7 @@
     background: #fff;
 }
 
-.editor-wrapper > div:last-child {
+.editor-wrapper .editor-main > div:last-child {
     padding: 8px;
 }
 
@@ -14,7 +14,12 @@
 }
 
 .toolbar {
+    position: sticky;
+    z-index: 5;
+    top: 64px;
     display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 10px;
     border-bottom: 1px solid #ddd;
@@ -36,6 +41,7 @@
     cursor: pointer;
 }
 
+.float-buttons button,
 .toolbar button {
     display: flex;
     align-items: center;
@@ -48,10 +54,12 @@
     font-weight: 600;
 }
 
+.float-buttons button:hover,
 .toolbar button:hover {
     background: #ccc;
 }
 
+.float-buttons button.active,
 .toolbar button.active {
     background: #007bff;
     color: white;
@@ -61,4 +69,86 @@
 .editor-content {
     padding: 15px;
     min-height: 250px;
+}
+
+.editor-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+}
+
+.image-sidebar {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #f7f7f7;
+    border-radius: 0 0 8px 8px;
+    position: sticky;
+    bottom: 46px;
+    z-index: 5;
+}
+
+.image-sidebar-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.image-sidebar-row + .image-sidebar-row {
+    margin-top: 8px;
+}
+
+.image-sidebar-row label {
+    font-size: 13px;
+}
+
+.image-sidebar input {
+    width: 100%;
+}
+
+.editor-image-resizer {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    background: red;
+    border-radius: 100%;
+    cursor: nwse-resize;
+}
+
+.article .float-left ~ .editor-image-resizer {
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.article .float-right ~ .editor-image-resizer {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    left: -6px;
+    right: auto;
+    cursor: nesw-resize;
+}
+
+.image-sidebar-cell {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 4px;
+}
+
+.float-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.slash-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    background: red;
+    padding: 20px;
+}
+
+.slash-menu:empty {
+    display: none;
 }

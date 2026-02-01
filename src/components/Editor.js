@@ -10,49 +10,12 @@ import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 import {EditorFontSize} from "./EditorFontSize";
 import {EditorImage} from "./EditorImage";
+import ImageSidebar from "./ImageSidebar";
+import {DivBlock} from "./DivBlock";
+import {SlashCommands} from "./SlashCommands";
 
 import {
-  AiOutlineBold,
-  AiOutlineItalic,
-  AiOutlineUnderline,
-  AiOutlineStrikethrough,
-  AiOutlineOrderedList,
-  AiOutlineUnorderedList,
-  AiOutlinePicture,
-  AiOutlineLink,
-  AiOutlineUndo,
-  AiOutlineRedo
-} from "react-icons/ai";
-import {
-  BiCode,
-  BiParagraph,
-  BiImageAdd,
-  BiAlignLeft,
-  BiAlignRight,
-  BiAlignMiddle,
-  BiAlignJustify
-} from "react-icons/bi";
-import {FaHeading, FaQuoteLeft, FaListOl, FaListUl, FaHighlighter} from "react-icons/fa";
-import {
-  MdFormatBold,
-  MdFormatItalic,
-  MdFormatUnderlined,
-  MdFormatStrikethrough,
-  MdFormatListBulleted,
-  MdFormatListNumbered,
-  MdFormatQuote,
-  MdFormatAlignLeft,
-  MdFormatAlignRight,
-  MdFormatAlignCenter,
-  MdFormatAlignJustify,
-  MdImage,
-  MdLink,
-  MdUndo,
-  MdRedo
-} from "react-icons/md";
-import {RiCodeBoxLine, RiSeparator, RiText, RiImageAddFill} from "react-icons/ri";
-
-import {
+  TbDeviceFloppy,
   TbBold,
   TbItalic,
   TbUnderline,
@@ -61,6 +24,9 @@ import {
   TbH1,
   TbH2,
   TbH3,
+  TbH4,
+  TbH5,
+  TbH6,
   TbList,
   TbListNumbers,
   TbBlockquote,
@@ -71,6 +37,7 @@ import {
   TbPhoto,
   TbLink,
   TbUnlink,
+  TbHighlight,
   TbArrowBackUp,
   TbArrowForwardUp
 } from "react-icons/tb";
@@ -79,7 +46,7 @@ import {api} from "../api";
 
 import "./editor.css";
 
-export default function TipTapEditor({value, onChange, token}) {
+export default function TipTapEditor({value, onChange, onSave}) {
   const uploadImageToStrapi = async (file) => {
     const formData = new FormData();
     formData.append("files", file);
@@ -99,6 +66,8 @@ export default function TipTapEditor({value, onChange, token}) {
     content: value,
     extensions: [
       StarterKit,
+      DivBlock,
+      SlashCommands,
       Image.configure({
         inline: true,
         allowBase64: true
@@ -122,6 +91,12 @@ export default function TipTapEditor({value, onChange, token}) {
       onChange(editor.getHTML());
     }
   });
+
+  const addLink = () => {
+    const url = prompt("Введите URL");
+    if (!url) return;
+    editor.chain().focus().setLink({href: url}).run();
+  };
 
   const addImage = useCallback(() => {
     const input = document.createElement("input");
@@ -155,62 +130,162 @@ export default function TipTapEditor({value, onChange, token}) {
 
   return (
     <div className="editor-wrapper">
-      <div className="toolbar">
-        <button onClick={() => editor.chain().focus().toggleBold().run()}>
-          <MdFormatBold></MdFormatBold>
-        </button>
+      <div className="editor-container">
+        <div className="editor-main">
+          <div className="toolbar">
+            <select
+              id="editor-font-size"
+              className="editor-select"
+              onChange={(e) =>
+                editor.chain().focus().setFontSize(e.target.value).run()
+              }
+            >
+              <option value="12px">12</option>
+              <option value="14px">14</option>
+              <option value="16px">16</option>
+              <option value="20px">20</option>
+              <option value="24px">24</option>
+              <option value="32px">32</option>
+            </select>
 
-        <button onClick={() => editor.chain().focus().toggleItalic().run()}>
-          <MdFormatItalic></MdFormatItalic>
-        </button>
+            <input
+              className="editor-color"
+              type="color"
+              onInput={(e) =>
+                editor.chain().focus().setColor(e.target.value).run()
+              }
+            />
 
-        <button onClick={() => editor.chain().focus().toggleHighlight().run()}>
-          <FaHighlighter></FaHighlighter>
-        </button>
+            <button onClick={() => editor.chain().focus().toggleHighlight().run()}>
+              <TbHighlight></TbHighlight>
+            </button>
 
-        <select
-          id="editor-font-size"
-          className="editor-select"
-          onChange={(e) =>
-            editor.chain().focus().setFontSize(e.target.value).run()
-          }
-        >
-          <option value="12px">12</option>
-          <option value="14px">14</option>
-          <option value="16px">16</option>
-          <option value="20px">20</option>
-          <option value="24px">24</option>
-          <option value="32px">32</option>
-        </select>
+            <button onClick={() => editor.chain().focus().toggleBold().run()}
+                    className={editor.isActive("bold") ? "active" : ""}>
+              <TbBold/>
+            </button>
 
-        <input
-          className="editor-color"
-          type="color"
-          onInput={(e) =>
-            editor.chain().focus().setColor(e.target.value).run()
-          }
-        />
+            <button onClick={() => editor.chain().focus().toggleItalic().run()}
+                    className={editor.isActive("italic") ? "active" : ""}>
+              <TbItalic/>
+            </button>
 
-        <button onClick={addImage}>
-          <BiImageAdd></BiImageAdd>
-        </button>
+            <button onClick={() => editor.chain().focus().toggleUnderline().run()}
+                    className={editor.isActive("underline") ? "active" : ""}>
+              <TbUnderline/>
+            </button>
 
-        <button onClick={() => editor.chain().focus().setTextAlign("left").run()}>
-          <BiAlignLeft></BiAlignLeft>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        >
-          <BiAlignMiddle></BiAlignMiddle>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        >
-          <BiAlignRight></BiAlignRight>
-        </button>
+            <button onClick={() => editor.chain().focus().toggleStrike().run()}
+                    className={editor.isActive("strike") ? "active" : ""}>
+              <TbStrikethrough/>
+            </button>
+
+            {/* Заголовки */}
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}
+                    className={editor.isActive("heading", {level: 1}) ? "active" : ""}>
+              <TbH1/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}
+                    className={editor.isActive("heading", {level: 2}) ? "active" : ""}>
+              <TbH2/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 3}).run()}
+                    className={editor.isActive("heading", {level: 3}) ? "active" : ""}>
+              <TbH3/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 4}).run()}
+                    className={editor.isActive("heading", {level: 4}) ? "active" : ""}>
+              <TbH4/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 5}).run()}
+                    className={editor.isActive("heading", {level: 5}) ? "active" : ""}>
+              <TbH5/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleHeading({level: 6}).run()}
+                    className={editor.isActive("heading", {level: 6}) ? "active" : ""}>
+              <TbH6/>
+            </button>
+
+            {/* Списки */}
+            <button onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    className={editor.isActive("bulletList") ? "active" : ""}>
+              <TbList/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    className={editor.isActive("orderedList") ? "active" : ""}>
+              <TbListNumbers/>
+            </button>
+
+            {/* Цитата */}
+            <button onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                    className={editor.isActive("blockquote") ? "active" : ""}>
+              <TbBlockquote/>
+            </button>
+
+            {/* Код */}
+            <button onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    className={editor.isActive("codeBlock") ? "active" : ""}>
+              <TbCode/>
+            </button>
+
+            {/* Выравнивание */}
+            <button onClick={() => editor.chain().focus().setTextAlign("left").run()}
+                    className={editor.isActive({textAlign: "left"}) ? "active" : ""}>
+              <TbAlignLeft/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().setTextAlign("center").run()}
+                    className={editor.isActive({textAlign: "center"}) ? "active" : ""}>
+              <TbAlignCenter/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().setTextAlign("right").run()}
+                    className={editor.isActive({textAlign: "right"}) ? "active" : ""}>
+              <TbAlignRight/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+                    className={editor.isActive({textAlign: "justify"}) ? "active" : ""}>
+              <TbAlignJustified/>
+            </button>
+
+            {/* Картинка */}
+            <button onClick={addImage}>
+              <TbPhoto/>
+            </button>
+
+            {/* Ссылки */}
+            <button onClick={addLink}>
+              <TbLink/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().unsetLink().run()}>
+              <TbUnlink/>
+            </button>
+
+            {/* Undo / Redo */}
+            <button onClick={() => editor.chain().focus().undo().run()}>
+              <TbArrowBackUp/>
+            </button>
+
+            <button onClick={() => editor.chain().focus().redo().run()}>
+              <TbArrowForwardUp/>
+            </button>
+
+            <button style={{marginLeft: 'auto'}} onClick={() => onSave()}>
+              <TbDeviceFloppy/>
+            </button>
+          </div>
+          <EditorContent editor={editor}/>
+        </div>
+        <ImageSidebar editor={editor}/>
       </div>
-
-      <EditorContent editor={editor}/>
     </div>
   );
 }

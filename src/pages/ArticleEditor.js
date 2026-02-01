@@ -100,22 +100,22 @@ export default function EditorPage() {
   };
 
   return (
-    <div>
+    <div className="article">
       <Loader loading={loading}/>
       <h1>Artikels</h1>
 
-      <ul className="article-list">
+      <div className="article-list">
         {articles.map((article, ai) => (
-          <li key={article.id} style={{padding: "10px 0", borderBottom: "1px solid #ccc", cursor: "pointer"}}
+          <div key={article.id} style={{padding: "10px 0", borderBottom: "1px solid #ccc", cursor: "pointer"}}
               onClick={() => {
                 setArticleId(article.documentId);
                 return navigate(`/editor/${article.documentId}`)
               }}
           >
             {ai + 1}. <strong>{article?.title}</strong> — ID: {article.documentId}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <input
         id="article-title"
@@ -125,7 +125,7 @@ export default function EditorPage() {
         placeholder="Title"
       />
 
-      <TipTapEditor value={content} onChange={setContent}/>
+      <TipTapEditor value={content} onSave={saveArticle} onChange={setContent}/>
 
       <div className="article-controls">
         <button className="article-save" onClick={saveArticle}>Save</button>

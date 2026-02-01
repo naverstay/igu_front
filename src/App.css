@@ -70,10 +70,40 @@ body {
     position: relative;
 }
 
+.article ol,
+.article ul {
+    padding-left: 20px;
+}
+
+.article ul {
+    list-style-type: disc;
+}
+
+.article ol {
+    list-style-type: decimal;
+}
+
 .article img {
     display: block;
     max-width: 100%;
 }
+
+.article .center {
+    display: block;
+    margin: 0 auto;
+}
+
+.article .float-right {
+    float: right;
+    margin: 0 0 20px 20px;
+}
+
+
+.article .float-left {
+    float: left;
+    margin: 0 20px 20px 0;
+}
+
 
 .article a {
     color: rgba(60, 35, 155, 1);
