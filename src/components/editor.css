@@ -1,0 +1,64 @@
+.editor-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0;
+    background: #fff;
+}
+
+.editor-wrapper > div:last-child {
+    padding: 8px;
+}
+
+.editor-wrapper > div:last-child p {
+    margin: 0;
+}
+
+.toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background: #f7f7f7;
+    border-radius: 8px 8px 0 0;
+}
+
+.editor-select {
+    border: 1px solid #bbb;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.editor-color {
+    border: 1px solid #bbb;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.toolbar button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border: 1px solid #bbb;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.toolbar button:hover {
+    background: #ccc;
+}
+
+.toolbar button.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.editor-content {
+    padding: 15px;
+    min-height: 250px;
+}

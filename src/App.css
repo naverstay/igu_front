@@ -16,6 +16,12 @@
     }
 }
 
+*,
+::before,
+::after {
+    box-sizing: inherit;
+    outline: 0 !important;
+}
 
 body {
     display: flex;
@@ -26,7 +32,6 @@ body {
     font-feature-settings: "lnum" on;
     font-feature-settings: "pnum" on, "lnum" on;
 }
-
 
 #root {
     flex: 1;
@@ -49,12 +54,11 @@ body {
 }
 
 .container a:hover {
-    color: #07c;
+    color: rgba(60, 35, 155, 1);
 }
 
 .container a.active {
-    color: #07c;
-    font-weight: 600;
+    color: rgba(60, 35, 155, 1);
 }
 
 .main {
@@ -66,6 +70,55 @@ body {
     position: relative;
 }
 
+.article img {
+    display: block;
+    max-width: 100%;
+}
+
+.article a {
+    color: rgba(60, 35, 155, 1);
+}
+
+.article a:hover {
+    text-decoration: underline;
+}
+
 .page-not-found {
     text-align: center;
+}
+
+.article-save {
+    margin: 16px 0;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.article-save:hover {
+    background: #ccc;
+}
+
+.article-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.article-title {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    margin-bottom: 16px;
+}
+
+.article-list {
+    margin-bottom: 16px;
 }

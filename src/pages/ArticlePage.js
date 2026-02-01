@@ -1,8 +1,13 @@
 import {Navigate, useLocation, useParams} from "react-router-dom";
 import {BlocksRenderer} from "@strapi/blocks-react-renderer";
+import {Helmet} from "react-helmet-async";
 import {useEffect, useRef, useState} from "react";
 import Loader from "../components/Loader";
 import {api} from "../api";
+
+const DEFAULT_TITLE = "Inklusion für Köln: Inclusion In & Out of the Box";
+const DEFAULT_KEYWORDS = "Inklusion, Kinderechte, Köln, Partizipation, Gesellschaftliche Teilhabe, Engagement, Networking, Empowerment, Menschenrechte, Kinder, Jugendliche, Behinderung, Familie, Armut, Care-Arbeit, Diskriminierung, Intersektionalität, Marginalisierung, Beratung";
+const DEFAULT_DESCRIPTION = "Inclutopia steht für Inklusion in Freizeit, Kultur und gesellschaftlichem Engagement. Durch Advocacyarbeit, Networking und Empowerment geben wir Kindern, Jugendlichen mit Behinderung und Diskriminierungserfahrung und ihren Familien in Köln und NRW eine starke Stimme.";
 
 export default function ArticlePage({slug: forcedSlug}) {
   const params = useParams();
@@ -59,13 +64,47 @@ export default function ArticlePage({slug: forcedSlug}) {
   }
 
   return (
-    <div className="article">
-      <Loader loading={loading}/>
+    <>
+      <Helmet>
+        <title>{article?.metaTitle || article?.title || DEFAULT_TITLE}</title>
+        <meta name="description" content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
+        <meta name="keywords" content={article?.metaKeywords || DEFAULT_KEYWORDS}/>
 
-      {!loading && article?.id && (<>
-        <h1>{article?.title ?? ""}</h1>
-        <BlocksRenderer content={article?.content}/>
-      </>)}
-    </div>
+        <meta name="twitter:card" content="summary"/>
+        <meta name="twitter:title" content={article?.metaTitle || article?.title || DEFAULT_TITLE}/>
+        <meta name="twitter:description"
+              content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
+        <meta name="twitter:image"
+              content={process.env.REACT_APP_API_URL + (article?.metaImage?.url || "")}/>
+
+        <meta property="og:description"
+              content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
+        <meta property="og:title" content={article?.metaTitle || article?.title || DEFAULT_TITLE}/>
+        <meta property="og:image"
+              content={process.env.REACT_APP_API_URL + (article?.metaImage?.url || "")}/>
+      </Helmet>
+
+      <div className="article">
+        <Loader loading={loading}/>
+
+        {!loading && article?.id && (<>
+          {article?.textHTML ?
+            <div dangerouslySetInnerHTML={{__html: article.textHTML}}/> :
+
+            article?.content ?
+              <BlocksRenderer content={article?.content} blocks={{
+                link: ({children, url, target}) => (
+                  <a href={url} target={target || "_self"}
+                     rel={target === "_blank" ? "noopener noreferrer" : undefined}>
+                    {children}
+                  </a>
+                )
+              }}/> :
+
+              <h1>{article?.title ?? ""}</h1>
+          }
+        </>)}
+      </div>
+    </>
   );
 }

@@ -8,8 +8,8 @@ export function NavigationProvider({children}) {
 
   useEffect(() => {
     async function loadMenu() {
-      const res = await api.get("/navigation-items?populate=navigation_items");
-      setMenu(res.data.data.sort((a, b) => a.order - b.order));
+      const res = await api.get("/navigation-items?populate=*");
+      setMenu(res.data.data.filter(f => !f.isChild).sort((a, b) => a.order - b.order));
     }
 
     loadMenu();

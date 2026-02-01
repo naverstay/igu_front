@@ -1,13 +1,21 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useNavigation} from "../context/NavigationContext";
+import {BlocksRenderer} from "@strapi/blocks-react-renderer";
+
 import "./footer.css";
 
 export default function Footer() {
+  const [nav, setNav] = useState(null);
+  const {menu} = useNavigation();
+
+  useEffect(() => {
+    setNav(menu.filter(f => f.isLogo)?.[0] ?? null);
+  }, [menu]);
 
   return (
     <footer className="footer">
       <div className="footer-inner container">
-        inclutopia gUG, Köln | <a href="tel:017624173246">0176 24173246</a> | <a href="tel:02234948082">02234
-        948082</a> | <a href="mailto:info@inclutopia-koeln.de">info@inclutopia-koeln.de</a>
+        {nav?.footer && <BlocksRenderer content={nav?.footer}/>}
       </div>
     </footer>
   );

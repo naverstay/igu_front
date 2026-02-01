@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from "react";
 import {NavLink, useLocation} from "react-router-dom";
 import {FaBars, FaTimes, FaPhone} from "react-icons/fa"
+import {FiChevronDown} from "react-icons/fi";
 import {useNavigation} from "../context/NavigationContext";
 
 import "./header.css";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [nav, setNav] = useState(null);
   const {menu} = useNavigation();
 
   const location = useLocation();
@@ -15,35 +17,38 @@ export default function Header() {
     setOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    setNav(menu.filter(f => f.isLogo)?.[0] ?? null);
+  }, [menu]);
+
   console.log('menu', menu);
 
   return (
     <header className="header">
       <div className="header-inner container">
-        {/* ЛОГОТИП */}
         <div className="logo">
           <NavLink to="/">
-            <img src="/logo.png" alt="Logo" className="logo-img"/>
+            {nav?.logoUrl?.url ?
+              <img src={process.env.REACT_APP_API_URL + (nav.logoUrl.url)
+              } alt="Logo" className="logo-img"/> : <span/>}
           </NavLink>
         </div>
 
         <nav className={"nav " + (open ? " open" : "")}>
-          {menu.map(item => (
-            !item.isChild && <div key={item.id} className="nav-link"><NavLink
-              to={item.url}>{item.title}</NavLink> {item.navigation_items && item.navigation_items.length > 0 && (
-              <div className="submenu"> {item.navigation_items.map(sub => (
-                <NavLink key={sub.id} to={sub.url}> {sub.title} </NavLink>))}
-              </div>)}
+          {menu.filter(f => !f.isLogo).filter(f => f.visible).map(item => (
+            <div key={item.id}
+                 className={"nav-link" + (item.navigation_items && item.navigation_items.length > 0 ? " dropdown" : "")}>
+              <NavLink to={item.url}>{item.title}</NavLink>
+              {item.navigation_items && item.navigation_items.length > 0 && (
+                <>
+                  <div className="submenu"> {item.navigation_items.map(sub => (
+                    <NavLink key={sub.id} to={sub.url}> {sub.title} </NavLink>))}
+                  </div>
+                  <div className="submenu-icon"><FiChevronDown/></div>
+                </>)
+              }
             </div>))
           }
-
-          {/*<NavLink to="/">Home</NavLink>*/}
-          {/*<NavLink to="/portfolio">Portfolio</NavLink>*/}
-          {/*<NavLink to="/leitlinien">Leitlinien / Themen</NavLink>*/}
-          {/*<NavLink to="/unterstuetzung">Unterstützung</NavLink>*/}
-          {/*<NavLink to="/kontakt">Kontakt</NavLink>*/}
-          {/*<NavLink to="/impressum">Impressum</NavLink>*/}
-          {/*<NavLink to="/ferienbetreuung">Ferienbetreuung in Köln</NavLink>*/}
         </nav>
 
         <button
@@ -54,7 +59,7 @@ export default function Header() {
           {open ? <FaTimes size={22}/> : <FaBars size={22}/>}
         </button>
 
-        <a className="phone" href="tel:4917624173246" aria-label="Telefon: +49 176 24173246">
+        <a className="phone" href={"tel:" + nav?.phone?.replaceAll(' ', '')} aria-label={"Telefon: " + nav?.phone}>
           <FaPhone size={22} style={{transform: "scaleX(-1)"}}/>
         </a>
       </div>
