@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect} from "react";
 import {EditorContent, useEditor} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import {TextStyle} from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
@@ -65,13 +64,9 @@ export default function TipTapEditor({value, onChange, onSave}) {
   const editor = useEditor({
     content: value,
     extensions: [
-      StarterKit,
+      StarterKit.configure({link: false}),
       DivBlock,
       SlashCommands,
-      Image.configure({
-        inline: true,
-        allowBase64: true
-      }),
       Link.configure({
         openOnClick: false
       }),
@@ -87,6 +82,9 @@ export default function TipTapEditor({value, onChange, onSave}) {
         placeholder: "New article..."
       })
     ],
+    //onCreate({editor}) {
+    //  console.log(editor.extensionManager.extensions.map(e => e.name));
+    //},
     onUpdate({editor}) {
       onChange(editor.getHTML());
     }

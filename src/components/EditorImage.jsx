@@ -1,6 +1,9 @@
 import Image from "@tiptap/extension-image";
 
-export const EditorImage = Image.extend({
+export const EditorImage = Image.configure({
+  inline: true,
+  allowBase64: true
+}).extend({
   addAttributes() {
     return {
       ...this.parent?.(),
