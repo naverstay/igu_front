@@ -31,29 +31,35 @@ async function run() {
 
     sitemap.write({url: "/", priority: 1.0});
 
+    const writeSiteMap = (arr = []) => {
+      arr?.forEach(a => {
+        try {
+          const url = a?.slug ?? a?.url ?? "";
+
+          if (url) {
+            sitemap.write({
+              url: `/${url}`,
+              changefreq: "weekly",
+              priority: 0.8
+            });
+          }
+        } catch (err) {
+          console.error("Error sitemap:", a, err.message);
+        }
+      });
+    }
+
     const artikels = await fetchCollection("artikels");
 
     console.log('artikels', artikels);
 
-    artikels?.forEach(a => {
-      sitemap.write({
-        url: `/artikel/${a.slug}`,
-        changefreq: "weekly",
-        priority: 0.8
-      });
-    });
+    writeSiteMap(artikels);
 
     const nav = await fetchCollection("navigation-items");
 
     console.log('nav', nav);
 
-    nav?.forEach(n => {
-      sitemap.write({
-        url: `/${n.url}`,
-        changefreq: "weekly",
-        priority: 0.7
-      });
-    });
+    writeSiteMap(nav);
 
     sitemap.end();
 
