@@ -14,31 +14,31 @@ import {DivBlock} from "./DivBlock";
 import {SlashCommands} from "./SlashCommands";
 
 import {
-  TbDeviceFloppy,
+  TbAlignCenter,
+  TbAlignJustified,
+  TbAlignLeft,
+  TbAlignRight,
+  TbArrowBackUp,
+  TbArrowForwardUp,
+  TbBlockquote,
   TbBold,
-  TbItalic,
-  TbUnderline,
-  TbStrikethrough,
   TbCode,
+  TbDeviceFloppy,
   TbH1,
   TbH2,
   TbH3,
   TbH4,
   TbH5,
   TbH6,
+  TbHighlight,
+  TbItalic,
+  TbLink,
   TbList,
   TbListNumbers,
-  TbBlockquote,
-  TbAlignLeft,
-  TbAlignCenter,
-  TbAlignRight,
-  TbAlignJustified,
   TbPhoto,
-  TbLink,
-  TbUnlink,
-  TbHighlight,
-  TbArrowBackUp,
-  TbArrowForwardUp
+  TbStrikethrough,
+  TbUnderline,
+  TbUnlink
 } from "react-icons/tb";
 
 import {api} from "../api";
@@ -56,7 +56,15 @@ export default function TipTapEditor({value, onChange, onSave}) {
 
       return (import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + res.data[0].url;
     } catch (err) {
-      console.error("UPLOAD ERROR:", err.response?.data || err);
+      if (err.response?.status === 500) {
+        console.warn("WEBP is there, but Strapi failed. Searching the last file…");
+        const files = await api.get("/upload/files");
+
+        return (import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + files.data.at(-1).url;
+      } else {
+        console.error("UPLOAD ERROR:", err.response?.data || err);
+      }
+
       throw err;
     }
   };

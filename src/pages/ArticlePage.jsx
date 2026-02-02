@@ -1,4 +1,4 @@
-import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {BlocksRenderer} from "@strapi/blocks-react-renderer";
 import {Helmet} from "react-helmet-async";
 import {useEffect, useRef, useState} from "react";

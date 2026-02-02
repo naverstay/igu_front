@@ -1,5 +1,5 @@
 import React from "react";
-import {TbAlignLeft, TbAlignCenter, TbAlignRight} from "react-icons/tb";
+import {TbAlignCenter, TbAlignLeft, TbAlignRight} from "react-icons/tb";
 
 export default function ImageSidebar({editor}) {
   const node = editor?.state?.selection?.node;

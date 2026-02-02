@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {NavLink, useLocation} from "react-router-dom";
-import {FaBars, FaTimes, FaPhone} from "react-icons/fa"
+import {FaBars, FaPhone, FaTimes} from "react-icons/fa"
 import {FiChevronDown} from "react-icons/fi";
 import {useNavigation} from "../context/NavigationContext";
 

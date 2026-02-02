@@ -1,4 +1,4 @@
-import {useParams, useNavigate, Navigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import TipTapEditor from "../components/Editor";
 import Loader from "../components/Loader";

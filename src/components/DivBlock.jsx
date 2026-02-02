@@ -1,4 +1,4 @@
-import {Node, mergeAttributes} from "@tiptap/core";
+import {mergeAttributes, Node} from "@tiptap/core";
 
 export const DivBlock = Node.create({
   name: "divBlock",
@@ -10,16 +10,16 @@ export const DivBlock = Node.create({
       class: {
         default: null,
         parseHTML: el => el.getAttribute("class"),
-        renderHTML: attrs => attrs.class ? { class: attrs.class } : {},
-      },
+        renderHTML: attrs => attrs.class ? {class: attrs.class} : {}
+      }
     };
   },
 
   parseHTML() {
-    return [{ tag: "div" }];
+    return [{tag: "div"}];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({HTMLAttributes}) {
     return ["div", mergeAttributes(HTMLAttributes), 0];
-  },
+  }
 });
