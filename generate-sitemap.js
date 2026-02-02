@@ -43,14 +43,17 @@ async function run() {
           const url = a?.slug ?? a?.url ?? "";
 
           if (url) {
+            console.log('url', url);
             sitemap.write({
               url: `/${url}`,
               changefreq: "weekly",
               priority: 0.8
             });
+          } else {
+            console.log('Failed item:', a);
           }
         } catch (err) {
-          console.error("Error sitemap:", a, err.message);
+          console.error("Error sitemap:", a, err);
         }
       });
     }
