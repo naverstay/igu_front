@@ -42,15 +42,12 @@ async function run() {
         try {
           const url = a?.slug ?? a?.url ?? "";
 
-          if (url) {
-            console.log('url', url);
+          if (url && url !== 'home') {
             sitemap.write({
               url: `/${url}`,
               changefreq: "weekly",
               priority: 0.8
             });
-          } else {
-            console.log('Failed item:', a);
           }
         } catch (err) {
           console.error("Error sitemap:", a, err);
@@ -60,13 +57,9 @@ async function run() {
 
     const artikels = await fetchCollection("artikels");
 
-    console.log('artikels', artikels);
-
     writeSiteMap(artikels);
 
     const nav = await fetchCollection("navigation-items");
-
-    console.log('nav', nav);
 
     writeSiteMap(nav);
 
@@ -74,11 +67,7 @@ async function run() {
 
     const xml = await streamToPromise(sitemap);
 
-    const xmlString = xml.toString();
-
-    console.log("Sitemap xml:", xmlString);
-
-    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xmlString);
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xml.toString());
 
     console.log("Sitemap generated.");
   }
