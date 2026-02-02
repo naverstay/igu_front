@@ -16,7 +16,7 @@ export default function App() {
       <Router>
         <Header/>
 
-        <main className="main">
+        <main id="main" className="main">
           <div className="container">
             <Routes>
               <Route path="/" element={<ArticlePage slug="home"/>}/>

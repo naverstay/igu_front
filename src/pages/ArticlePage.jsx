@@ -57,8 +57,6 @@ export default function ArticlePage({slug: forcedSlug}) {
     loadArticle();
   }, [slug]);
 
-  console.log('article', article);
-
   if (goto404) {
     return <Navigate to="/404" replace/>;
   }
