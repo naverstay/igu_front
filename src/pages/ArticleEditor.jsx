@@ -66,7 +66,7 @@ export default function EditorPage() {
   const saveArticle = async () => {
     if (articleId) {
       try {
-        await api.put(`/artikels/${articleId}`, {
+        await api.patch(`/artikels/${articleId}`, {
           data: {
             title,
             textHTML: content
