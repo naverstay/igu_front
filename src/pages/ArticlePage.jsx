@@ -1,4 +1,4 @@
-import {Navigate, useLocation, useParams} from "react-router-dom";
+import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {BlocksRenderer} from "@strapi/blocks-react-renderer";
 import {Helmet} from "react-helmet-async";
 import {useEffect, useRef, useState} from "react";
@@ -10,20 +10,16 @@ const DEFAULT_KEYWORDS = "Inklusion, Kinderechte, Köln, Partizipation, Gesellsc
 const DEFAULT_DESCRIPTION = "Inclutopia steht für Inklusion in Freizeit, Kultur und gesellschaftlichem Engagement. Durch Advocacyarbeit, Networking und Empowerment geben wir Kindern, Jugendlichen mit Behinderung und Diskriminierungserfahrung und ihren Familien in Köln und NRW eine starke Stimme.";
 
 export default function ArticlePage({slug: forcedSlug}) {
+  const navigate = useNavigate();
   const params = useParams();
   const slug = forcedSlug || params.slug;
 
   const [article, setArticle] = useState(null);
-  const [goto404, setGoto404] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
 
   const prevSlug = useRef(null);
-
-  useEffect(() => {
-    setGoto404(false);
-  }, [location.pathname]);
 
   useEffect(() => {
     if (prevSlug.current === slug) {
@@ -33,7 +29,6 @@ export default function ArticlePage({slug: forcedSlug}) {
     prevSlug.current = slug;
 
     setLoading(true);
-    setGoto404(false);
     setArticle(null);
 
     async function loadArticle() {
@@ -45,7 +40,7 @@ export default function ArticlePage({slug: forcedSlug}) {
         if (res.data?.data?.length) {
           setArticle(res.data.data[0]);
         } else {
-          setGoto404(true);
+          navigate("/404", {replace: true});
         }
       } finally {
         setTimeout(() => {
@@ -56,10 +51,6 @@ export default function ArticlePage({slug: forcedSlug}) {
 
     loadArticle();
   }, [slug]);
-
-  if (goto404) {
-    return <Navigate to="/404" replace/>;
-  }
 
   return (
     <>
@@ -88,7 +79,7 @@ export default function ArticlePage({slug: forcedSlug}) {
         <Loader loading={loading}/>
 
         {!loading && article?.id && (<>
-          {article?.textHTML ?
+          {article?.useTextHTML ?
             <div dangerouslySetInnerHTML={{__html: article.textHTML}}/> :
 
             article?.content ?

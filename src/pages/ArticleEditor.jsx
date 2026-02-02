@@ -1,12 +1,12 @@
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams, useNavigate, Navigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import TipTapEditor from "../components/Editor";
 import Loader from "../components/Loader";
 import {api} from "../api";
 
 export default function EditorPage() {
-  const {id} = useParams();
   const navigate = useNavigate();
+  const {id} = useParams();
 
   const [fetchArtikles, setFetchArtikles] = useState(0);
   const [articles, setArticles] = useState([]);
@@ -46,11 +46,16 @@ export default function EditorPage() {
           const res = await api.get(`/artikels?filters[documentId][$eq]=${articleId}&populate=*`);
           const data = res.data?.data?.[0];
 
-          setTitle(data?.title || "");
-          setContent(data?.textHTML || "");
-          setLoading(false);
+          if (data) {
+            setTitle(data?.title || "");
+            setContent(data?.textHTML || "");
+          } else {
+            navigate("/editor", {replace: true});
+          }
         } catch (err) {
           console.error("Article load error", err);
+        } finally {
+          setLoading(false);
         }
       }
     }
@@ -107,10 +112,10 @@ export default function EditorPage() {
       <div className="article-list">
         {articles.map((article, ai) => (
           <div key={article.id} style={{padding: "10px 0", borderBottom: "1px solid #ccc", cursor: "pointer"}}
-              onClick={() => {
-                setArticleId(article.documentId);
-                return navigate(`/editor/${article.documentId}`)
-              }}
+               onClick={() => {
+                 setArticleId(article.documentId);
+                 return navigate(`/editor/${article.documentId}`)
+               }}
           >
             {ai + 1}. <strong>{article?.title}</strong> — ID: {article.documentId}
           </div>
