@@ -82,6 +82,8 @@ export default function ArticlePage({slug: forcedSlug}) {
         <meta property="og:title" content={article?.metaTitle || article?.title || DEFAULT_TITLE}/>
         <meta property="og:image"
               content={(import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + (article?.metaImage?.url || "")}/>
+
+        <link rel="canonical" href={import.meta.env.VITE_API_URL + (slug === 'home' ? '' : `/${slug}`)}/>
       </Helmet>
 
       <div className="article">
