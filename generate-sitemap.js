@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from 'fs';
+import path from 'path';
 import {SitemapStream, streamToPromise} from "sitemap";
 import dotenv from "dotenv";
 
@@ -7,6 +8,11 @@ dotenv.config();
 const API = process.env.VITE_API_URL + "/api";
 const HOST = process.env.VITE_HOST_URL;
 const TOKEN = process.env.VITE_STRAPI_TOKEN;
+
+const publicDir = path.join(process.cwd(), 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir);
+}
 
 async function fetchCollection(name) {
   const res = await fetch(`${API}/${name}?populate=*`, {
@@ -64,7 +70,12 @@ async function run() {
     sitemap.end();
 
     const xml = await streamToPromise(sitemap);
-    fs.writeFileSync("./public/sitemap.xml", xml.toString());
+
+    const xmlString = xml.toString();
+
+    console.log("Sitemap xml:", xmlString);
+
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xmlString);
 
     console.log("Sitemap generated.");
   }
