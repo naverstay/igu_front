@@ -29,7 +29,7 @@ export default function Header() {
         <div className="logo">
           <NavLink to="/">
             {nav?.logoUrl?.url ?
-              <img src={import.meta.env.VITE_API_URL + (nav.logoUrl.url)
+              <img src={(import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + (nav.logoUrl.url)
               } alt="Logo" className="logo-img"/> : <span/>}
           </NavLink>
         </div>
