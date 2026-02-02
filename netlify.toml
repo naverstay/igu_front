@@ -2,7 +2,6 @@
   ignore = "false"
 
 [build.environment]
-  VITE_HOST_URL = "${URL}"
   NPM_CONFIG_IGNORE_SCRIPTS = "true"
   command = "yarn install --frozen-lockfile && yarn build"
   publish = "dist"

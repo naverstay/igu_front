@@ -24,40 +24,44 @@ async function fetchCollection(name) {
 async function run() {
   console.log("Generating sitemap...", HOST, API);
 
-  const sitemap = new SitemapStream({hostname: HOST});
+  if (!HOST.startsWith("http")) {
+    console.log("Host must start with http:// or https://");
+  } else {
+    const sitemap = new SitemapStream({hostname: HOST});
 
-  sitemap.write({url: "/", priority: 1.0});
+    sitemap.write({url: "/", priority: 1.0});
 
-  const artikels = await fetchCollection("artikels");
+    const artikels = await fetchCollection("artikels");
 
-  console.log('artikels', artikels);
+    console.log('artikels', artikels);
 
-  artikels?.forEach(a => {
-    sitemap.write({
-      url: `/artikel/${a.slug}`,
-      changefreq: "weekly",
-      priority: 0.8
+    artikels?.forEach(a => {
+      sitemap.write({
+        url: `/artikel/${a.slug}`,
+        changefreq: "weekly",
+        priority: 0.8
+      });
     });
-  });
 
-  const nav = await fetchCollection("navigation-items");
+    const nav = await fetchCollection("navigation-items");
 
-  console.log('nav', nav);
+    console.log('nav', nav);
 
-  nav?.forEach(n => {
-    sitemap.write({
-      url: `/${n.url}`,
-      changefreq: "weekly",
-      priority: 0.7
+    nav?.forEach(n => {
+      sitemap.write({
+        url: `/${n.url}`,
+        changefreq: "weekly",
+        priority: 0.7
+      });
     });
-  });
 
-  sitemap.end();
+    sitemap.end();
 
-  const xml = await streamToPromise(sitemap);
-  fs.writeFileSync("./public/sitemap.xml", xml.toString());
+    const xml = await streamToPromise(sitemap);
+    fs.writeFileSync("./public/sitemap.xml", xml.toString());
 
-  console.log("Sitemap generated.");
+    console.log("Sitemap generated.");
+  }
 }
 
 run();
