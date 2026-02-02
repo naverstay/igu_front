@@ -22,11 +22,15 @@ async function fetchCollection(name) {
 }
 
 async function run() {
+  console.log("Generating sitemap...", HOST, API);
+
   const sitemap = new SitemapStream({hostname: HOST});
 
   sitemap.write({url: "/", priority: 1.0});
 
   const artikels = await fetchCollection("artikels");
+
+  console.log('artikels', artikels);
 
   artikels?.forEach(a => {
     sitemap.write({
@@ -37,6 +41,8 @@ async function run() {
   });
 
   const nav = await fetchCollection("navigation-items");
+
+  console.log('nav', nav);
 
   nav?.forEach(n => {
     sitemap.write({
