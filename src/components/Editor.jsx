@@ -13,6 +13,8 @@ import {EditorImage} from "./EditorImage";
 import ImageSidebar from "./ImageSidebar";
 import {DivBlock} from "./DivBlock";
 import {SlashCommands} from "./SlashCommands";
+import {PopupImageInsert} from "./PopupImageInsert.jsx";
+import {Figcaption, Figure} from "./Figure.jsx";
 
 import {
   TbAlignCenter,
@@ -39,6 +41,7 @@ import {
   TbList,
   TbListNumbers,
   TbPhoto,
+  TbPhotoUp,
   TbSearch,
   TbStrikethrough,
   TbUnderline,
@@ -55,6 +58,17 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
   const [htmlValue, setHtmlValue] = useState("");
   const editorRef = useRef(null);
   const [height, setHeight] = useState(500);
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [savedPos, setSavedPos] = useState(null);
+  const [savedSelection, setSavedSelection] = useState(null);
+
+  const openImagePopup = () => {
+    if (!editor) return;
+    const {state} = editor;
+    const selection = state.selection;
+    setSavedSelection(selection.toJSON());
+    setShowImagePopup(true);
+  };
 
   const uploadImageToStrapi = async (file) => {
     const formData = new FormData();
@@ -93,6 +107,8 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
       Highlight,
       EditorFontSize,
       EditorImage,
+      Figure,
+      Figcaption,
       TextAlign.configure({
         types: ["heading", "paragraph", "image"]
       }),
@@ -119,7 +135,23 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
     onChange(value);
   };
 
-  const handleEditorMount = (editor) => {
+  const handleEditorBeforeMount = (monaco) => {
+    monaco.languages.registerHoverProvider("html", {
+      provideHover(model, position) {
+        const word = model.getWordAtPosition(position);
+        if (!word) return;
+        const text = word.word;
+        if (!/^https?:\/\//.test(text)) return;
+        return {contents: [{value: ` **Link:** ${text} [Copy URL](command:copyLink?${encodeURIComponent(JSON.stringify(text))}) `}]};
+      }
+    });
+
+    monaco.editor.registerCommand("copyLink", (accessor, url) => {
+      navigator.clipboard.writeText(url);
+    });
+  };
+
+  const handleEditorMount = (editor, monaco) => {
     editorRef.current = editor;
 
     const updateHeight = () => {
@@ -276,7 +308,20 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
                 <button onClick={() => editor.chain().focus().setTextAlign("justify").run()}
                         className={editor.isActive({textAlign: "justify"}) ? "active" : ""}><TbAlignJustified/>
                 </button>
-                <button onClick={addImage}><TbPhoto/></button>
+
+                {DEV_MODE ? <button onClick={addImage}><TbPhotoUp/></button> :
+                  <>
+                    <button onClick={openImagePopup}><TbPhoto/></button>
+
+                    {showImagePopup && (
+                      <PopupImageInsert
+                        editor={editor}
+                        onClose={() => setShowImagePopup(false)}
+                      />
+                    )}
+                  </>
+                }
+
                 <button onClick={addLink}><TbLink/></button>
                 <button onClick={() => editor.chain().focus().unsetLink().run()}><TbUnlink/></button>
                 <button onClick={() => editor.chain().focus().undo().run()}><TbArrowBackUp/></button>
@@ -292,6 +337,7 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
                       defaultLanguage="html"
                       value={htmlValue}
                       defaultValue={""}
+                      beforeMount={handleEditorBeforeMount}
                       onMount={handleEditorMount}
                       onChange={handleHtmlChange}
                       onValidate={handleEditorValidation}
@@ -320,5 +366,6 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
         {showHtml ? null : <ImageSidebar editor={editor}/>}
       </div>
     </div>
-  );
+  )
+    ;
 }

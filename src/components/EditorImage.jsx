@@ -1,9 +1,11 @@
 import Image from "@tiptap/extension-image";
 
-export const EditorImage = Image.configure({
-  inline: true,
-  allowBase64: true
-}).extend({
+export const EditorImage = Image.extend({
+  name: "image",
+  inline: false,
+  group: "block",
+  draggable: true,
+
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -29,41 +31,40 @@ export const EditorImage = Image.configure({
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
       wrapper.style.display = "inline-block";
+
       const img = document.createElement("img");
       img.src = node.attrs.src;
       img.style.width = node.attrs.width || "auto";
       img.className = node.attrs.class || "";
       if (node.attrs.style) img.setAttribute("style", node.attrs.style);
+
       const handle = document.createElement("div");
       handle.className = "editor-image-resizer";
 
       let startX, startWidth;
+
       handle.addEventListener("mousedown", e => {
         e.preventDefault();
         startX = e.clientX;
         startWidth = img.offsetWidth;
+
         const onMove = e => {
           const newWidth = startWidth + (e.clientX - startX);
           img.style.width = newWidth + "px";
           editor.commands.updateAttributes("image", {width: newWidth + "px"});
         };
+
         const onUp = () => {
           document.removeEventListener("mousemove", onMove);
           document.removeEventListener("mouseup", onUp);
         };
+
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onUp);
       });
+
       wrapper.appendChild(img);
       wrapper.appendChild(handle);
-
-      //wrapper.addEventListener("click", event => {
-      //  event.preventDefault();
-      //  event.stopPropagation();
-      //
-      //  const pos = getPos();
-      //  editor.commands.setNodeSelection(pos);
-      //});
 
       return {
         dom: wrapper,
