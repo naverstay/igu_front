@@ -1,3 +1,8 @@
+.editor-controls {
+    display: flex;
+    gap: 8px;
+}
+
 .editor-wrapper {
     border: 1px solid #ccc;
     border-radius: 8px;

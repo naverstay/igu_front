@@ -3,6 +3,7 @@ import {NavLink, useLocation} from "react-router-dom";
 import {FaBars, FaPhone, FaTimes} from "react-icons/fa"
 import {FiChevronDown} from "react-icons/fi";
 import {useNavigation} from "../context/NavigationContext";
+import {API_URL, DEV_MODE} from "../api.js";
 
 import "./header.css";
 
@@ -21,8 +22,6 @@ export default function Header() {
     setNav(menu.filter(f => f.isLogo)?.[0] ?? null);
   }, [menu]);
 
-  console.log('menu', menu);
-
   return (
     <header className="header">
       <a href="#main" id="skip-link" className="skip-link">Zum Inhalt springen</a>
@@ -31,7 +30,7 @@ export default function Header() {
         <div className="logo">
           <NavLink to="/">
             {nav?.logoUrl?.url ?
-              <img src={(import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + (nav.logoUrl.url)
+              <img src={(DEV_MODE ? API_URL : '') + (nav.logoUrl.url)
               } alt="Inclutopia gUG" role="img" className="logo-img"/> : <span/>}
           </NavLink>
         </div>

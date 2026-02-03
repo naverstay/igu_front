@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import TipTapEditor from "../components/Editor";
 import Loader from "../components/Loader";
-import {api} from "../api";
+import {api, DEV_MODE} from "../api";
 
 export default function EditorPage() {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export default function EditorPage() {
   const saveArticle = async () => {
     if (articleId) {
       try {
-        await api.patch(`/artikels/${articleId}`, {
+        await api.put(`/artikels/${articleId}`, {
           data: {
             title,
             textHTML: content
@@ -104,6 +104,12 @@ export default function EditorPage() {
     }
   };
 
+  const copyArticle = async (txt) => {
+    await navigator.clipboard.writeText(txt).then(() => {
+      setArticleStatus("Article's HTML is in clipboard");
+    });
+  };
+
   return (
     <div className="article">
       <Loader loading={loading}/>
@@ -130,10 +136,11 @@ export default function EditorPage() {
         placeholder="Title"
       />
 
-      <TipTapEditor value={content} onSave={saveArticle} onChange={setContent}/>
+      <TipTapEditor value={content} onSave={saveArticle} onCopy={copyArticle} onChange={setContent}/>
 
       <div className="article-controls">
-        <button className="article-save" onClick={saveArticle}>Save</button>
+        <button className="article-button" onClick={() => copyArticle(content)}>Copy HTML</button>
+        {DEV_MODE ? <button className="article-button" onClick={saveArticle}>Save</button> : null}
         <div className="article-status">
           {articleStatus}
         </div>

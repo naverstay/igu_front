@@ -3,7 +3,7 @@ import {BlocksRenderer} from "@strapi/blocks-react-renderer";
 import {Helmet} from "react-helmet-async";
 import {useEffect, useRef, useState} from "react";
 import Loader from "../components/Loader";
-import {api} from "../api";
+import {api, API_URL, DEV_MODE} from "../api";
 
 const DEFAULT_TITLE = "Inklusion für Köln: Inclusion In & Out of the Box";
 const DEFAULT_KEYWORDS = "Inklusion, Kinderechte, Köln, Partizipation, Gesellschaftliche Teilhabe, Engagement, Networking, Empowerment, Menschenrechte, Kinder, Jugendliche, Behinderung, Familie, Armut, Care-Arbeit, Diskriminierung, Intersektionalität, Marginalisierung, Beratung";
@@ -64,15 +64,15 @@ export default function ArticlePage({slug: forcedSlug}) {
         <meta name="twitter:description"
               content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
         <meta name="twitter:image"
-              content={(import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + (article?.metaImage?.url || "")}/>
+              content={(DEV_MODE ? API_URL : '') + (article?.metaImage?.url || "")}/>
 
         <meta property="og:description"
               content={article?.metaDescription || DEFAULT_DESCRIPTION}/>
         <meta property="og:title" content={article?.metaTitle || article?.title || DEFAULT_TITLE}/>
         <meta property="og:image"
-              content={(import.meta.env.DEV ? import.meta.env.VITE_API_URL : '') + (article?.metaImage?.url || "")}/>
+              content={(DEV_MODE ? API_URL : '') + (article?.metaImage?.url || "")}/>
 
-        <link rel="canonical" href={import.meta.env.VITE_API_URL + (slug === 'home' ? '' : `/${slug}`)}/>
+        <link rel="canonical" href={API_URL + (slug === 'home' ? '' : `/${slug}`)}/>
       </Helmet>
 
       <div className="article">

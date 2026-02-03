@@ -23,7 +23,8 @@ export const EditorImage = Image.configure({
         renderHTML: attrs => attrs.style ? {style: attrs.style} : {}
       }
     };
-  }, addNodeView() {
+  },
+  addNodeView() {
     return ({node, editor, getPos}) => {
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
@@ -55,8 +56,18 @@ export const EditorImage = Image.configure({
       });
       wrapper.appendChild(img);
       wrapper.appendChild(handle);
+
+      //wrapper.addEventListener("click", event => {
+      //  event.preventDefault();
+      //  event.stopPropagation();
+      //
+      //  const pos = getPos();
+      //  editor.commands.setNodeSelection(pos);
+      //});
+
       return {
-        dom: wrapper, update: updatedNode => {
+        dom: wrapper,
+        update: updatedNode => {
           if (updatedNode.type.name !== "image") return false;
           img.src = updatedNode.attrs.src;
           img.style.width = updatedNode.attrs.width;

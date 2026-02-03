@@ -9,7 +9,12 @@ export default function ImageSidebar({editor}) {
   const attrs = node.attrs;
 
   const update = (key, value) => {
-    editor.chain().focus().updateAttributes("image", {[key]: value}).run();
+    const pos = editor.state.selection.from;
+
+    editor.chain().updateAttributes("image", {[key]: value}).run();
+
+    editor.commands.setNodeSelection(pos);
+    //editor.chain().focus().updateAttributes("image", {[key]: value}).setNodeSelection(pos).run();
   };
 
   return (
