@@ -13,3 +13,7 @@
     align-items: center;
     justify-content: center;
 }
+
+.footer-inner p {
+    margin: 0;
+}
