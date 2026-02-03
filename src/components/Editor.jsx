@@ -33,6 +33,7 @@ import {
   TbH5,
   TbH6,
   TbHighlight,
+  TbHtml,
   TbItalic,
   TbLink,
   TbList,
@@ -53,6 +54,7 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
   const [showHtml, setShowHtml] = useState(false);
   const [htmlValue, setHtmlValue] = useState("");
   const editorRef = useRef(null);
+  const [height, setHeight] = useState(500);
 
   const uploadImageToStrapi = async (file) => {
     const formData = new FormData();
@@ -119,6 +121,13 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
 
   const handleEditorMount = (editor) => {
     editorRef.current = editor;
+
+    const updateHeight = () => {
+      const contentHeight = editor.getContentHeight();
+      setHeight(Math.max(500, Math.min(2000, contentHeight)));
+    };
+    editor.onDidContentSizeChange(updateHeight);
+    updateHeight();
   };
 
   const runAction = (actionId) => {
@@ -127,6 +136,10 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
     const action = editor.getAction(actionId);
     if (action) action.run();
   };
+
+  function handleEditorValidation(markers) {
+    markers.forEach((marker) => console.log('onValidate:', marker.message));
+  }
 
   const handleCopy = async () => {
     onCopy(value);
@@ -186,14 +199,14 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
   if (!editor) return null;
 
   return (
-    <>
-      <div className="editor-controls">
-        <button className="article-button" onClick={() => setShowHtml(v => !v)}>{showHtml ? "WYSIWYG" : "HTML"}</button>
-      </div>
-      <div className="editor-wrapper">
-        <div className="editor-container">
-          <div className="editor-main">
-            {showHtml ? <div className="toolbar">
+    <div className="editor-wrapper">
+      <div className="editor-container">
+        <div className="editor-main">
+          <div className="toolbar">
+            <button onClick={() => setShowHtml(v => !v)}
+                    className={showHtml ? "active" : ""}><TbHtml/></button>
+
+            {showHtml ? <>
                 <button onClick={() => runAction("editor.action.formatDocument")}><TbCode/></button>
                 <button onClick={() => runAction("actions.find")}><TbSearch/></button>
                 <button onClick={() => editorRef.current?.trigger("keyboard", "undo")}><TbArrowBackUp/>
@@ -201,9 +214,8 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
                 <button onClick={() => editorRef.current?.trigger("keyboard", "redo")}><TbArrowForwardUp/>
                 </button>
                 <button style={{marginLeft: 'auto'}} onClick={() => onCopy(htmlValue)}><TbCopy/></button>
-                {DEV_MODE ? <button onClick={onSave}><TbDeviceFloppy/></button> : null}
-              </div> :
-              <div className="toolbar">
+              </> :
+              <>
                 <select
                   id="editor-font-size"
                   className="editor-select"
@@ -226,106 +238,87 @@ export default function TipTapEditor({value, onChange, onSave, onCopy}) {
                     editor.chain().focus().setColor(e.target.value).run()
                   }
                 />
-
                 <button onClick={() => editor.chain().focus().toggleHighlight().run()}><TbHighlight/></button>
-
                 <button onClick={() => editor.chain().focus().toggleBold().run()}
                         className={editor.isActive("bold") ? "active" : ""}><TbBold/></button>
-
                 <button onClick={() => editor.chain().focus().toggleItalic().run()}
                         className={editor.isActive("italic") ? "active" : ""}><TbItalic/></button>
-
                 <button onClick={() => editor.chain().focus().toggleUnderline().run()}
                         className={editor.isActive("underline") ? "active" : ""}><TbUnderline/></button>
-
                 <button onClick={() => editor.chain().focus().toggleStrike().run()}
                         className={editor.isActive("strike") ? "active" : ""}><TbStrikethrough/></button>
-
-                {/* Заголовки */}
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}
                         className={editor.isActive("heading", {level: 1}) ? "active" : ""}><TbH1/></button>
-
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}
                         className={editor.isActive("heading", {level: 2}) ? "active" : ""}><TbH2/></button>
-
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 3}).run()}
                         className={editor.isActive("heading", {level: 3}) ? "active" : ""}><TbH3/></button>
-
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 4}).run()}
                         className={editor.isActive("heading", {level: 4}) ? "active" : ""}><TbH4/></button>
-
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 5}).run()}
                         className={editor.isActive("heading", {level: 5}) ? "active" : ""}><TbH5/></button>
-
                 <button onClick={() => editor.chain().focus().toggleHeading({level: 6}).run()}
                         className={editor.isActive("heading", {level: 6}) ? "active" : ""}><TbH6/></button>
-
-                {/* Списки */}
                 <button onClick={() => editor.chain().focus().toggleBulletList().run()}
                         className={editor.isActive("bulletList") ? "active" : ""}><TbList/></button>
-
                 <button onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         className={editor.isActive("orderedList") ? "active" : ""}><TbListNumbers/></button>
-
-                {/* Цитата */}
                 <button onClick={() => editor.chain().focus().toggleBlockquote().run()}
                         className={editor.isActive("blockquote") ? "active" : ""}><TbBlockquote/></button>
-
-                {/* Код */}
                 <button onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                         className={editor.isActive("codeBlock") ? "active" : ""}><TbCode/></button>
-
-                {/* Выравнивание */}
                 <button onClick={() => editor.chain().focus().setTextAlign("left").run()}
                         className={editor.isActive({textAlign: "left"}) ? "active" : ""}><TbAlignLeft/></button>
-
                 <button onClick={() => editor.chain().focus().setTextAlign("center").run()}
                         className={editor.isActive({textAlign: "center"}) ? "active" : ""}><TbAlignCenter/></button>
-
                 <button onClick={() => editor.chain().focus().setTextAlign("right").run()}
                         className={editor.isActive({textAlign: "right"}) ? "active" : ""}><TbAlignRight/></button>
-
                 <button onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-                        className={editor.isActive({textAlign: "justify"}) ? "active" : ""}><TbAlignJustified/></button>
-
-                {/* Картинка */}
+                        className={editor.isActive({textAlign: "justify"}) ? "active" : ""}><TbAlignJustified/>
+                </button>
                 <button onClick={addImage}><TbPhoto/></button>
-
-                {/* Ссылки */}
                 <button onClick={addLink}><TbLink/></button>
-
                 <button onClick={() => editor.chain().focus().unsetLink().run()}><TbUnlink/></button>
-
-                {/* Undo / Redo */}
                 <button onClick={() => editor.chain().focus().undo().run()}><TbArrowBackUp/></button>
-
                 <button onClick={() => editor.chain().focus().redo().run()}><TbArrowForwardUp/></button>
-
                 <button style={{marginLeft: 'auto'}} onClick={handleCopy}><TbCopy/></button>
-                {DEV_MODE ? <button onClick={() => onSave()}><TbDeviceFloppy/></button> : null}
-              </div>
+              </>
             }
-
-            {showHtml ? <Editor height="500px"
-                                defaultLanguage="html"
-                                value={htmlValue}
-                                defaultValue={""}
-                                onMount={handleEditorMount}
-                                onChange={handleHtmlChange}
-                                options={{
-                                  minimap: {enabled: false},
-                                  fontSize: 14,
-                                  wordWrap: "on",
-                                  automaticLayout: true,
-                                  scrollBeyondLastLine: false
-                                }}/> :
-              <EditorContent editor={editor}/>
-            }
+            {DEV_MODE ? <button onClick={() => onSave()}><TbDeviceFloppy/></button> : null}
           </div>
 
-          {showHtml ? null : <ImageSidebar editor={editor}/>}
+          {showHtml ? <div style={{minHeight: '516px'}}>
+              <Editor height={height}
+                      defaultLanguage="html"
+                      value={htmlValue}
+                      defaultValue={""}
+                      onMount={handleEditorMount}
+                      onChange={handleHtmlChange}
+                      onValidate={handleEditorValidation}
+                      options={{
+                        minimap: {enabled: false},
+                        scrollbar: {
+                          useShadows: false,
+                          alwaysConsumeMouseWheel: false,
+                          verticalHasArrows: true,
+                          horizontalHasArrows: true,
+                          //vertical: 'hidden',
+                          //horizontal: 'hidden',
+                          verticalScrollbarSize: 8,
+                          horizontalScrollbarSize: 8
+                        },
+                        fontSize: 14,
+                        wordWrap: "on",
+                        automaticLayout: true,
+                        scrollBeyondLastLine: false
+                      }}/>
+            </div> :
+            <EditorContent style={{minHeight: '516px'}} editor={editor}/>
+          }
         </div>
+
+        {showHtml ? null : <ImageSidebar editor={editor}/>}
       </div>
-    </>
+    </div>
   );
 }

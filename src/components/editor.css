@@ -157,3 +157,9 @@
 .slash-menu:empty {
     display: none;
 }
+
+.monaco-editor .find-widget {
+    top: 0 !important;
+    left: 80px !important;
+    right: auto !important;
+}

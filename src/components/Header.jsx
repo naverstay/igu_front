@@ -45,12 +45,15 @@ export default function Header() {
                   <button className="submenu-icon" title="submenu" aria-label="submenu"
                           onKeyDown={event => {
                             if (event.key === "Enter") {
+                              event.preventDefault();
                               event.target.closest('.dropdown').classList.toggle('__open')
                             }
                             if (event.key === "ArrowDown") {
+                              event.preventDefault();
                               event.target.closest('.dropdown').classList.add('__open')
                             }
                             if (event.key === "ArrowUp") {
+                              event.preventDefault();
                               event.target.closest('.dropdown').classList.remove('__open')
                             }
                           }}><FiChevronDown/></button>
