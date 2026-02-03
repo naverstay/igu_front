@@ -51,7 +51,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 10px;
+    padding: 6px;
+    width: 28px;
+    height: 28px;
     border: 1px solid #bbb;
     background: white;
     border-radius: 4px;
@@ -112,26 +114,14 @@
 
 .editor-image-resizer {
     position: absolute;
-    right: -6px;
-    bottom: -6px;
+    top: -6px;
+    left: 50%;
+    margin-left: -6px;
     width: 12px;
     height: 12px;
     background: red;
     border-radius: 100%;
-    cursor: nwse-resize;
-}
-
-.article .float-left ~ .editor-image-resizer {
-    margin-bottom: 20px;
-    margin-right: 20px;
-}
-
-.article .float-right ~ .editor-image-resizer {
-    margin-bottom: 20px;
-    /*margin-left: 20px;*/
-    /*left: -6px;*/
-    /*right: auto;*/
-    /*cursor: nesw-resize;*/
+    cursor: ew-resize;
 }
 
 .image-sidebar-cell {
@@ -149,6 +139,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1000;
     background: red;
     padding: 20px;

@@ -1,5 +1,21 @@
 import {Extension} from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
+import {Plugin} from "prosemirror-state";
+
+const updateSlashMenu = (text = "") => {
+  let dom = document.getElementById("slash-menu");
+
+  if (dom) {
+    dom.classList.remove("hidden");
+  } else {
+    dom = document.createElement("div");
+    dom.className = "slash-menu";
+    dom.id = "slash-menu";
+    document.body.appendChild(dom);
+  }
+
+  dom.textContent = text || "";
+}
 
 export const SlashCommands = Extension.create({
   name: "slashCommands",
@@ -46,25 +62,21 @@ export const SlashCommands = Extension.create({
           return [];
         },
 
-        render: (dom, props) => ({
+        render: (props) => ({
           onStart: e => {
-            dom = document.createElement("div");
-            dom.className = "slash-menu";
-            dom.id = "slash-menu";
-            dom.textContent = e.items[0]?.title || "";
+            updateSlashMenu(e.items[0]?.title || "");
 
             props = {
               type: "class",
               value: e.items[0]?.value ?? ""
             }
-            document.body.appendChild(dom);
           },
           onUpdate: e => {
-            dom.textContent = e.items[0]?.title || "";
+            updateSlashMenu(e.items[0]?.title || "");
             props.value = e.items[0]?.value ?? "";
           },
           onExit() {
-            document.getElementById("slash-menu")?.remove();
+            document.getElementById("slash-menu")?.classList?.add("hidden");
           },
           onKeyDown: ({event, ...rest}) => {
             if (event.key === "Tab") {
@@ -82,6 +94,16 @@ export const SlashCommands = Extension.create({
             return false;
           }
         })
+      }),
+      new Plugin({
+        props: {
+          handleDOMEvents: {
+            blur: (view, event) => {
+              updateSlashMenu("");
+              return false;
+            }
+          }
+        }
       })
     ];
   }

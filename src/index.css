@@ -9,3 +9,20 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.clearfix:before,
+.clearfix:after,
+div[data-class="clearfix"]:before,
+div[data-class="clearfix"]:after {
+    content: "";
+    display: table;
+}
+
+.clearfix:after,
+div[data-class="clearfix"]:after {
+    clear: both;
+}

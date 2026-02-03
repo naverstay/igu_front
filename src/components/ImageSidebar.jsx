@@ -8,13 +8,23 @@ export default function ImageSidebar({editor}) {
 
   const attrs = node.attrs;
 
-  const update = (key, value) => {
+  const update_ = (key, value) => {
     const pos = editor.state.selection.from;
 
-    editor.chain().updateAttributes("image", {[key]: value}).run();
+    editor.commands.updateAttributes("image", {[key]: value});
+
+    editor.view.dispatch(editor.state.tr);
 
     editor.commands.setNodeSelection(pos);
-    //editor.chain().focus().updateAttributes("image", {[key]: value}).setNodeSelection(pos).run();
+  };
+
+  const update = (key, value) => {
+    const pos = editor.state.selection.from;
+    editor.chain().setNodeSelection(pos).updateAttributes("image", {[key]: value}).run();
+
+    editor.view.dispatch(editor.state.tr);
+
+    editor.commands.setNodeSelection(pos);
   };
 
   return (
@@ -31,6 +41,7 @@ export default function ImageSidebar({editor}) {
           <button onClick={() => update("class", "float-right")}>
             <TbAlignRight></TbAlignRight>
           </button>
+          <button onClick={() => update("class", null)}/>
         </div>
       </div>
 

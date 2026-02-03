@@ -2,8 +2,8 @@ import Image from "@tiptap/extension-image";
 
 export const EditorImage = Image.extend({
   name: "image",
-  inline: false,
   group: "block",
+  inline: false,
   draggable: true,
 
   addAttributes() {
@@ -52,6 +52,7 @@ export const EditorImage = Image.extend({
           const newWidth = startWidth + (e.clientX - startX);
           img.style.width = newWidth + "px";
           editor.commands.updateAttributes("image", {width: newWidth + "px"});
+          //editor.view.dispatch(editor.state.tr);
         };
 
         const onUp = () => {
