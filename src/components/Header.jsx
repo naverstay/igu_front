@@ -63,7 +63,9 @@ export default function Header() {
                           }}><FiChevronDown/></button>
 
                   <div className="submenu" aria-expanded>
-                    {item.navigation_items.map(sub => <NavLink key={sub.id} to={sub.url}> {sub.title} </NavLink>)}
+                    {item.navigation_items.filter(f => f.visible).map(sub =>
+                      <NavLink key={sub.id} to={sub.url}>{sub.title}</NavLink>)
+                    }
                   </div>
                 </>)
               }
