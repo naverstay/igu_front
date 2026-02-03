@@ -30,7 +30,7 @@ export const EditorImage = Image.extend({
     return ({node, editor, getPos}) => {
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
-      wrapper.style.display = "inline-block";
+      wrapper.style.display = "block";
 
       const img = document.createElement("img");
       img.src = node.attrs.src;

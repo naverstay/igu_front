@@ -27,7 +27,19 @@
     padding-right: 20px;
 }
 
+.dropdown.active-submenu > a::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: 8px;
+    left: 8px;
+    height: 2px;
+    background: #005fcc;
+    z-index: 1;
+}
+
 .nav-link a {
+    position: relative;
     display: block;
     padding: 4px 8px;
 }

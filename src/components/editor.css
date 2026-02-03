@@ -128,10 +128,10 @@
 
 .article .float-right ~ .editor-image-resizer {
     margin-bottom: 20px;
-    margin-left: 20px;
-    left: -6px;
-    right: auto;
-    cursor: nesw-resize;
+    /*margin-left: 20px;*/
+    /*left: -6px;*/
+    /*right: auto;*/
+    /*cursor: nesw-resize;*/
 }
 
 .image-sidebar-cell {

@@ -14,6 +14,10 @@ export default function Header() {
 
   const location = useLocation();
 
+  const hasActiveSubmenu = (submenu) => {
+    return submenu?.some(item => location.pathname.startsWith('/' + item.url));
+  }
+
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
@@ -38,7 +42,7 @@ export default function Header() {
         <nav className={"nav " + (open ? " open" : "")} role="menu">
           {menu.filter(f => !f.isLogo).filter(f => f.visible).map(item => (
             <div key={item.id} role="menuitem"
-                 className={"nav-link" + (item.navigation_items && item.navigation_items.length > 0 ? " dropdown" : "")}>
+                 className={"nav-link" + (item.navigation_items && item.navigation_items.length > 0 ? (" dropdown" + (hasActiveSubmenu(item.navigation_items) ? " active-submenu" : "")) : "")}>
               <NavLink to={item.url === 'home' ? '' : item.url}>{item.title}</NavLink>
               {item.navigation_items && item.navigation_items.length > 0 && (
                 <>
