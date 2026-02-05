@@ -110,7 +110,7 @@ export default function EditorPage() {
     });
   };
 
-  return (
+  return <div className="container">
     <div className="article">
       <Loader loading={loading}/>
       <h1>Artikels</h1>
@@ -146,5 +146,5 @@ export default function EditorPage() {
         </div>
       </div>
     </div>
-  );
+  </div>;
 }

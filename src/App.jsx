@@ -17,15 +17,13 @@ export default function App() {
         <Header/>
 
         <main id="main" className="main">
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<ArticlePage slug="home"/>}/>
-              <Route path="/editor" element={<ArticleEditor/>}/>
-              <Route path="/editor/:id" element={<ArticleEditor/>}/>
-              <Route path="/:slug" element={<ArticlePage/>}/>
-              <Route path="/404" element={<NotFound/>}/>
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<ArticlePage slug="home"/>}/>
+            <Route path="/editor" element={<ArticleEditor/>}/>
+            <Route path="/editor/:id" element={<ArticleEditor/>}/>
+            <Route path="/:slug" element={<ArticlePage/>}/>
+            <Route path="/404" element={<NotFound/>}/>
+          </Routes>
         </main>
 
         <Footer/>

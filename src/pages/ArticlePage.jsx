@@ -1,9 +1,10 @@
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {BlocksRenderer} from "@strapi/blocks-react-renderer";
 import {Helmet} from "react-helmet-async";
-import {useEffect, useRef, useState} from "react";
+import {Fragment, useEffect, useRef, useState} from "react";
 import Loader from "../components/Loader";
 import {api, API_URL, DEV_MODE} from "../api";
+import Gallery from "../components/Gallery.jsx";
 
 const DEFAULT_TITLE = "Inklusion für Köln: Inclusion In & Out of the Box";
 const DEFAULT_KEYWORDS = "Inklusion, Kinderechte, Köln, Partizipation, Gesellschaftliche Teilhabe, Engagement, Networking, Empowerment, Menschenrechte, Kinder, Jugendliche, Behinderung, Familie, Armut, Care-Arbeit, Diskriminierung, Intersektionalität, Marginalisierung, Beratung";
@@ -35,7 +36,14 @@ export default function ArticlePage({slug: forcedSlug}) {
       try {
         const res = await api.get(
           `/artikels?filters[slug][$eq]=${slug}&populate=*`
+          //`/artikels?filters[slug][$eq]=${slug}&populate[content][populate][on][shared.gallery-block][populate][gallery_items]=image`
+          //`/artikels?filters[slug][$eq]=${slug}&populate[content][on][shared.gallery-block][fields][0]=gallery_items&populate[content][on][shared.gallery-block][populate][gallery_items][populate]=image`
+          //`/artikels?filters[slug][$eq]=${slug}&populate[content][on][shared.gallery-block][populate][gallery_items][populate]=image`
+          //`/artikels?filters[slug][$eq]=${slug}&populate[content][populate][gallery_items][populate]=image`
+          //`/artikels?filters[slug][$eq]=${slug}&populate[content][populate]=gallery_items`
         );
+
+        console.log('article', res.data.data);
 
         if (res.data?.data?.length) {
           setArticle(res.data.data[0]);
@@ -79,21 +87,32 @@ export default function ArticlePage({slug: forcedSlug}) {
         <Loader loading={loading}/>
 
         {!loading && article?.id && (<>
-          {article?.useTextHTML ?
-            <div dangerouslySetInnerHTML={{__html: article.textHTML}}/> :
+          {article?.content?.map((m, mi) => <Fragment key={mi}>
+              {m?.__component === "shared.content-block" ?
+                m?.useTextHTML ?
+                  <div dangerouslySetInnerHTML={{__html: m.textHTML}}/> :
 
-            article?.content ?
-              <BlocksRenderer content={article?.content} blocks={{
-                link: ({children, url, target}) => (
-                  <a href={url} target={target || "_self"}
-                     rel={target === "_blank" ? "noopener noreferrer" : undefined}>
-                    {children}
-                  </a>
-                )
-              }}/> :
+                  m?.content ?
+                    <BlocksRenderer content={m?.content} blocks={{
+                      link: ({children, url, target}) => (
+                        <a href={url} target={target || "_self"}
+                           rel={target === "_blank" ? "noopener noreferrer" : undefined}>
+                          {children}
+                        </a>
+                      )
+                    }}/> :
 
-              <h1>{article?.title ?? ""}</h1>
-          }
+                    <h1>{m?.title ?? ""}</h1>
+                : m?.__component === "shared.gallery-block" ?
+                  <div className={"gallery-container " + (m?.fullScreen ? "" : "container")}>
+                    <Gallery id={m.galleryId} options={m?.swiperOptions ?? {}}/>
+                  </div> :
+                  <div className="container">
+                    <div>No component</div>
+                  </div>
+              }
+            </Fragment>
+          )}
         </>)}
       </div>
     </>
