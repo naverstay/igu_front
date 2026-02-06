@@ -1,0 +1,9 @@
+.gallery-holder {
+    position: relative;
+    min-height: 60px;
+}
+
+.gallery-holder .loader {
+    top: 50%;
+    transform: translateY(-50%);
+}

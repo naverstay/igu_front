@@ -7,6 +7,8 @@ import "swiper/css/pagination";
 import {api, API_URL} from "../api.js";
 import Loader from "./Loader.jsx";
 
+import "./gallery.css";
+
 export default function Gallery({id, options = {}}) {
   const [items, setItems] = useState([]);
   const [gallery, setGallery] = useState(null);
@@ -35,47 +37,43 @@ export default function Gallery({id, options = {}}) {
 
   return (
     <div className="gallery-holder">
-      {loading ?
-        <Loader loading={loading} loaderId={2}/> :
-        <>
-          <div className="gallery-title">{gallery?.title ?? "title"}</div>
-          <div className="gallery-text">{gallery?.description ?? "description"}</div>
-          {
-            items.length ? <Swiper modules={[Navigation, Pagination, Autoplay]}
-                                   spaceBetween={20}
-                                   slidesPerView={1}
-                                   loop={true}
-                                   navigation={true}
-                                   pagination={{clickable: true}}
-                                   autoplay={{delay: 3000}}
-                                   {...options}>
-                {items.map((item) => {
-                  return (
-                    <SwiperSlide key={item.id}>
-                      <div style={{textAlign: "center"}}>
-                        {item.image && (
-                          <img
-                            src={`${API_URL}${item.image.url}`}
-                            alt={item.alternativeText}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              borderRadius: "8px",
-                              marginBottom: "10px"
-                            }}
-                          />
-                        )}
+      <Loader loading={loading} loaderType={3}/>
+      <div className="gallery-title">{gallery?.title ?? "title"}</div>
+      <div className="gallery-text">{gallery?.description ?? "description"}</div>
+      {
+        items.length ? <Swiper modules={[Navigation, Pagination, Autoplay]}
+                               spaceBetween={20}
+                               slidesPerView={1}
+                               loop={true}
+                               navigation={true}
+                               pagination={{clickable: true}}
+                               autoplay={{delay: 3000}}
+                               {...options}>
+            {items.map((item) => {
+              return (
+                <SwiperSlide key={item.id}>
+                  <div style={{textAlign: "center"}}>
+                    {item.image && (
+                      <img
+                        src={`${API_URL}${item.image.url}`}
+                        alt={item.alternativeText}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          borderRadius: "8px",
+                          marginBottom: "10px"
+                        }}
+                      />
+                    )}
 
-                        <div className="gallery-title">{item.title}</div>
-                        <div className="gallery-text">{item.description}</div>
-                      </div>
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper> :
-              <div className="gallery-title">No Images</div>
-          }
-        </>
+                    <div className="gallery-title">{item.title}</div>
+                    <div className="gallery-text">{item.description}</div>
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper> :
+          <div className="gallery-title">No Images</div>
       }
     </div>
   );

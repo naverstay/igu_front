@@ -90,19 +90,23 @@ export default function ArticlePage({slug: forcedSlug}) {
           {article?.content?.map((m, mi) => <Fragment key={mi}>
               {m?.__component === "shared.content-block" ?
                 m?.useTextHTML ?
-                  <div dangerouslySetInnerHTML={{__html: m.textHTML}}/> :
+                  <div className="container">
+                    <div dangerouslySetInnerHTML={{__html: m.textHTML}}/>
+                  </div> :
 
                   m?.content ?
-                    <BlocksRenderer content={m?.content} blocks={{
-                      link: ({children, url, target}) => (
-                        <a href={url} target={target || "_self"}
-                           rel={target === "_blank" ? "noopener noreferrer" : undefined}>
-                          {children}
-                        </a>
-                      )
-                    }}/> :
+                    <div className="container">
+                      <BlocksRenderer content={m?.content} blocks={{
+                        link: ({children, url, target}) => (
+                          <a href={url} target={target || "_self"}
+                             rel={target === "_blank" ? "noopener noreferrer" : undefined}>
+                            {children}
+                          </a>
+                        )
+                      }}/>
+                    </div> :
 
-                    <h1>{m?.title ?? ""}</h1>
+                    <h1>{m?.title ?? "No title"}</h1>
                 : m?.__component === "shared.gallery-block" ?
                   <div className={"gallery-container " + (m?.fullScreen ? "" : "container")}>
                     <Gallery id={m.galleryId} options={m?.swiperOptions ?? {}}/>
